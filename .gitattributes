@@ -1,0 +1,22 @@
+# Line endings: force LF for all text files (prevents CRLF/LF diff noise)
+* text=auto eol=lf
+
+# Python
+*.py text eol=lf
+*.pyi text eol=lf
+
+# Config / Markup
+*.toml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.cursorrules text eol=lf
+
+# Shell scripts (must be LF)
+*.sh text eol=lf
+
+# Binary (never touch)
+*.db binary
+*.sqlite3 binary
+*.pyc binary

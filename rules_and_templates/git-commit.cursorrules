@@ -1,0 +1,155 @@
+# Git 提交规范（Angular 规范 · 中英双语版）
+
+> 本规范基于 Angular Commit Convention，针对中文团队做了本地化调整。
+> 所有提交必须符合以下格式，不符合规范的 commit 直接打回重写。
+
+---
+
+## 一、格式要求
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### 1.1 type — 提交类型（英文，从以下列表选取）
+
+| type | 说明 | 示例 |
+|------|------|------|
+| `feat` | 新功能 | 新增用户导出接口 |
+| `fix` | 修复 Bug | 修复订单金额计算精度丢失 |
+| `docs` | 文档变更 | 更新 API 文档 |
+| `style` | 代码格式（不影响逻辑） | 统一缩进为 2 空格 |
+| `refactor` | 重构（非新功能、非修 Bug） | 拆分订单服务为独立模块 |
+| `perf` | 性能优化 | 批量查询替代循环单查 |
+| `test` | 测试相关 | 补充支付模块单元测试 |
+| `chore` | 构建/工具/依赖变更 | 升级 webpack 到 v5 |
+| `ci` | CI/CD 配置变更 | 添加自动化部署流水线 |
+| `revert` | 回滚提交 | 回滚 feat(order): 新增批量导出 |
+
+### 1.2 scope — 影响范围（**强制必填**）
+
+scope 用于标识本次提交影响的模块/功能域。必须填写，不允许省略。
+
+常见 scope 示例：
+- `user` — 用户模块
+- `order` — 订单模块
+- `payment` — 支付模块
+- `auth` — 认证鉴权
+- `api` — API 层
+- `db` — 数据库/数据层
+- `config` — 配置相关
+- `infra` — 基础设施
+
+> 如果涉及多个模块，取主要变更的模块。跨模块的架构变更可用 `arch`。
+
+### 1.3 subject — 简短概括（**必须用中文**）
+
+- 一句话说明"做了什么"，**不要写"为什么"和"怎么做"**
+- 不超过 50 个字符
+- 结尾不加句号
+- 使用祈使句风格（如"新增"而非"新增了"）
+
+### 1.4 body — 详细描述（**必须用英文**）
+
+- 解释"为什么做"和"怎么做"
+- 技术细节、设计思路、影响范围
+- 可以多行，每行不超过 72 字符
+
+### 1.5 footer — 关联信息（可选）
+
+- 关联的 Jira/Issue 编号：`Closes #123` 或 `JIRA: PROJ-456`
+- 破坏性变更：`BREAKING CHANGE: ...`
+
+---
+
+## 二、Good Case ✅
+
+```
+feat(order): 新增批量导出订单接口
+
+Add POST /api/orders/export endpoint that supports filtering by date range
+and order status. Uses streaming response to handle large datasets (>10k rows)
+without memory overflow. Returns CSV format with configurable columns.
+
+JIRA: PROJ-1234
+```
+
+```
+fix(payment): 修复微信支付回调签名校验失败
+
+The WeChat pay callback verification was using raw request body for signature
+calculation, but the framework's body parser had already decoded it. Fixed by
+reading the original raw body from the request before parsing.
+
+Closes #567
+```
+
+```
+refactor(auth): 拆分认证中间件为独立模块
+
+Extract authentication middleware from the monolithic app.ts into a dedicated
+auth module. This improves testability and allows different auth strategies
+(OAuth, JWT, API key) to be configured independently per route.
+```
+
+```
+perf(user): 优化用户列表分页查询
+
+Replace OFFSET-based pagination with cursor-based pagination for the user list
+endpoint. OFFSET degrades on large datasets (500ms+ at 1M rows), cursor approach
+maintains consistent <10ms response time.
+
+BREAKING CHANGE: User list API response format changed from {page, pageSize}
+to {cursor, hasNext}. Frontend needs to update pagination logic.
+```
+
+---
+
+## 三、Bad Case ❌
+
+```
+update
+```
+❌ 无 type、无 scope、无有意义的内容。打回。
+
+```
+fix: bug修复
+```
+❌ 缺少 scope，subject 无信息量。打回。
+
+```
+feat(user): added new export feature for user data with CSV and Excel support, including custom column selection and date range filtering
+```
+❌ subject 超长且用了英文，应中文概括、英文放 body。打回。
+
+```
+feat(user): 新增导出功能
+
+新增了导出功能
+```
+❌ body 只是重复 subject，无技术细节。打回。
+
+```
+feat: 新增订单导出
+```
+❌ 缺少 scope。打回。
+
+```
+fix(payment): 修了个bug
+
+Something was broken, now it works.
+```
+❌ subject 信息量为零，body 毫无技术细节。打回。
+
+---
+
+## 四、执行规则
+
+1. **Commit Message 检查**：CI 流水线中加入 commitlint，不符合规范的提交直接拦截。
+2. **PR 合并检查**：Squash Merge 时以 PR 标题作为 commit message，同样需要符合规范。
+3. **历史提交清理**：本地未推送的不规范提交，用 `git rebase -i` 修正后再推送。
+4. 本规范解释权归技术架构组所有。

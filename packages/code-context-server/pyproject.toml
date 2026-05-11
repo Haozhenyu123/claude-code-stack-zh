@@ -1,0 +1,31 @@
+[project]
+name = "code-context-server"
+version = "0.1.0"
+description = "MCP 服务：代码上下文索引与语义检索，基于 ChromaDB 向量化实现代码库 RAG"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "fastmcp>=2.0",
+    "mcp>=1.0",
+    "chromadb>=1.0",
+    "aiosqlite>=0.20",
+    "pathspec>=0.12",
+]
+
+[project.scripts]
+code-context-server = "code_context_server.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/code_context_server"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.mypy]
+python_version = "3.11"
+strict = true

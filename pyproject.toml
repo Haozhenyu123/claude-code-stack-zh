@@ -1,0 +1,39 @@
+[project]
+name = "claude-code-stack-zh"
+version = "0.1.0"
+description = "中文 MCP 工具栈，为 Claude Code / Cursor 提供代码上下文与团队记忆服务"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "claude-code-stack-zh contributors" }]
+keywords = ["mcp", "claude-code", "cursor", "chinese", "ai-tools"]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "pre-commit>=4.0",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["packages"]
